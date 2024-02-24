@@ -119,6 +119,39 @@ app.get('/registeredUsers', async(req, res) => {
         res.status(500).json({ error: `Internal server error: ${error.message}` });
     }
 });
+// Delete an announcement by ID
+app.delete('/announcements/:id', async(req, res) => {
+    console.log("HIT DELETE")
+    try {
+        const { id } = req.params;
+        // Find the announcement by ID and delete it
+        await Announcement.findByIdAndDelete(id);
+        res.status(200).json({ message: 'Announcement deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: `Internal server error: ${error.message}` });
+    }
+});
+
+// Update an announcement by ID
+app.put('/announcements/:text', async(req, res) => {
+    console.log("HIT UPDATE")
+    try {
+        const { text } = req.params;
+        const { announcement, date } = req.body;
+        console.log("text", text)
+        console.log("announcement", announcement)
+        console.log("date", date)
+            // Find the announcement by text and update its fields
+        console.log(await Announcement.findOne({
+            announcement: text
+        }))
+        await Announcement.findOneAndUpdate({ announcement: text }, { announcement, date });
+        res.status(200).json({ message: 'Announcement updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: `Internal server error: ${error.message}` });
+    }
+});
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
